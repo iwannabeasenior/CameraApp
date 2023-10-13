@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "56218069405",
+    "project_id": "appcamera-f2f57",
+    "storage_bucket": "appcamera-f2f57.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:56218069405:android:2cff4a6b36414c4e5fa774",
+        "android_client_info": {
+          "package_name": "com.example.untitled"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpzpYaivLPPXSnZjnqWwJhQvO3IM-ppDA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
