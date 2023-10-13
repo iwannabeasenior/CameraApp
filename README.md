@@ -1,4 +1,4 @@
-# untitled (CameraApp)
+# FlutterProject (CameraApp)
 
 A new Flutter project.
 
