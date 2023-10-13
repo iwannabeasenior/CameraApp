@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:gallery_saver/gallery_saver.dart';
+import 'package:smooth_video_progress/smooth_video_progress.dart';
 import 'package:untitled/cameraProject/QRcode.dart';
 import 'package:video_player/video_player.dart';
 import '../font/my_flutter_app_icons.dart';
@@ -32,6 +33,9 @@ class CameraPageState extends State<CameraPage2> {
   late List<CameraDescription>cameras;
   bool _isLoading = true;
   bool _isRecording = false;
+
+  String speed = '1.0';
+
   @override
   Widget build(BuildContext context) {
 
@@ -48,15 +52,7 @@ class CameraPageState extends State<CameraPage2> {
           // alignment: Alignment.bottomCenter,
           children : [
             CameraPreview(cameraController),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                FloatingActionButton(onPressed: _recordVideo,
-                    child : Icon(_isRecording ? Icons.stop : Icons.circle),
-                    backgroundColor: Colors.red),
-              ],
-            ),
+
             Align(
 
                 alignment: Alignment.bottomCenter,
@@ -80,6 +76,15 @@ class CameraPageState extends State<CameraPage2> {
                   ),
                 )
 
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                FloatingActionButton(onPressed: _recordVideo,
+                    child : Icon(_isRecording ? Icons.stop : Icons.circle),
+                    backgroundColor: Colors.white54),
+              ],
             ),
             Align(
                 alignment: Alignment(0, -0.9),
@@ -165,26 +170,106 @@ class CameraPageState extends State<CameraPage2> {
       });
       videoPlayerController = VideoPlayerController.file(File(file.path));
       await videoPlayerController.initialize();
-      await videoPlayerController.setLooping(true);
+      await videoPlayerController.setLooping(false);
       await videoPlayerController.play();
       Navigator.push(context, MaterialPageRoute(builder: (context) {
         return Scaffold(
           bottomNavigationBar: BottomAppBar(
-            child : IconButton(
-              onPressed: () {
-                if (videoPlayerController.value.isPlaying) {
-                  videoPlayerController.pause();
-                } else {
-                  videoPlayerController.play();
-                }
-                setState(() {});
-              },
-              icon : videoPlayerController.value.isPlaying ? Icon(Icons.pause) : Icon(Icons.play_arrow)
-            )
-          ),
+                child : Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SmoothVideoProgress(
+                        controller: videoPlayerController,
+                        builder: (context, position, duration, child) {
+                          return Slider(
+                            onChangeEnd: (_) {
+                              videoPlayerController.play();
+                            },
+                            onChangeStart: (_) {
+                              videoPlayerController.pause();
+                            },
+                            onChanged: (value) {
+                              videoPlayerController.seekTo(Duration(milliseconds: value.toInt()));
+                            },
+                            value: position.inMilliseconds.toDouble(),
+                            min : 0,
+                            max : duration.inMilliseconds.toDouble(),
+                          );
+                        }),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+
+                        IconButton(
+                          onPressed: () async {
+                            // // videoPlayerController.setVolume(10000)
+                            // int minute = await videoPlayerController.position.then((value) => value!.inMinutes);
+                            // int hour = await videoPlayerController.position.then((value) => value!.inHours);
+                            int second = await videoPlayerController.position.then((value) => value!.inSeconds - 5);
+                            // videoPlayerController.seekTo(Duration(hours: hour, minutes : minute, seconds: second));
+                            videoPlayerController.seekTo(Duration(seconds : second));
+                          },
+                          icon : Icon(Icons.skip_previous),
+                        ),
+                        IconButton(
+                            onPressed: () async {
+                              if (videoPlayerController.value.isPlaying) {
+                                await videoPlayerController.pause();
+                              } else {
+                                await videoPlayerController.play();
+                              }
+                              setState(() {});
+                            },
+                            icon : Icon(videoPlayerController.value.isPlaying ? Icons.pause : Icons.play_arrow)
+                        ),
+                        IconButton(
+                            onPressed: () async {
+                              // // videoPlayerController.setVolume(10000)
+                              // int minute = await videoPlayerController.position.then((value) => value!.inMinutes);
+                              // int hour = await videoPlayerController.position.then((value) => value!.inHours);
+                              int second = await videoPlayerController.position.then((value) => value!.inSeconds - 5);
+                              // videoPlayerController.seekTo(Duration(hours: hour, minutes : minute, seconds: second));
+                              videoPlayerController.seekTo(Duration(seconds : second));
+                            },
+                            icon : Icon(Icons.skip_next)
+                        ),
+                        PopupMenuButton(
+                          child: Text(speed),
+                          onSelected: (value) {
+                            if (value == MenuItemButton.button1) {
+                              speed = 'x2';
+                              videoPlayerController.setPlaybackSpeed(2.0);
+                              setState(() {});
+                            } else if (value == MenuItemButton.button2) {
+                              speed  = 'x1.5';
+                              videoPlayerController.setPlaybackSpeed(1.5);
+                              setState(() {});
+                            } else if (value == MenuItemButton.button3) {
+                              speed = 'x1';
+                              videoPlayerController.setPlaybackSpeed(1.0);
+                              setState(() {});
+                            }
+                          },
+                          itemBuilder: (context) => const [
+                            PopupMenuItem(child: Text('x2'),
+                              value: MenuItemButton.button1,),
+                            PopupMenuItem(child: Text('x1.5'),
+                                value : MenuItemButton.button2),
+                            PopupMenuItem(child: Text('x1'),
+                                value : MenuItemButton.button3)
+                          ],
+                        )
+                      ],
+                    ),
+                  ],
+                )
+            ),
+
           body : VideoPlayer(videoPlayerController),
           appBar: AppBar(
-            title: Text('Your record video here, do you want to save it ?'),
+            backgroundColor: Colors.cyanAccent,
+            title: Text('Your record video, save it >>',),
             actions: [
               IconButton(
                 onPressed: () async{
@@ -201,18 +286,26 @@ class CameraPageState extends State<CameraPage2> {
                     showDialog(context: context,
                         builder: (context) {
                           return AlertDialog(
+                            backgroundColor: Colors.red,
                             actions: [
 
-                              TextButton(
-                                onPressed : () {
-                                  Navigator.pop(context);
-                                  Navigator.pop(context);
-                                  videoPlayerController.pause();
-                                },
-                                child: Text('OK'),
+                              Center(
+                                child: TextButton(
+                                  onPressed : () {
+                                    Navigator.pop(context);
+                                    Navigator.pop(context);
+                                    videoPlayerController.pause();
+                                  },
+                                  child: Text('OK'),
+                                ),
                               )
                             ],
-                            title: Text('Video saved'),
+                            title: Center(
+                              child: Text('Video saved',
+                              style: TextStyle(
+                                color: Colors.tealAccent
+                              )),
+                            ),
                           );
                         });
                   },
@@ -295,4 +388,7 @@ class CameraPageState extends State<CameraPage2> {
     cameraController.dispose();
     super.dispose();
   }
+}
+enum MenuItemButton {
+  button1, button2, button3;
 }

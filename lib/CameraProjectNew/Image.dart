@@ -49,6 +49,34 @@ class CameraPageState extends State<CameraPage1> {
             // alignment: Alignment.bottomCenter,
             children : [
               CameraPreview(cameraController),
+
+              Align(
+
+                  alignment: Alignment.bottomCenter,
+                  child : SizedBox(
+                    height: 200,
+                    width: 200,
+                    child: Slider(
+
+
+                        value : zoom,
+                        activeColor: Colors.white,
+                        onChanged:(value) {
+                          print(value);
+                          value = value * 10;
+                          if (value <= 8.0 && value >= 1.0) {
+                            //here we set the zoom level when we move slider pointer
+                            cameraController.setZoomLevel(value);
+                          }
+                          setState(() {
+                            zoom = value / 10;
+                          });
+                        }
+                    ),
+                  )
+
+              ),
+
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -58,35 +86,9 @@ class CameraPageState extends State<CameraPage1> {
                     backgroundColor: Colors.white,
                   ),
 
+
                 ],
               ),
-
-                  Align(
-
-                    alignment: Alignment.bottomCenter,
-                    child : SizedBox(
-                      height: 200,
-                      width: 200,
-                      child: Slider(
-
-
-                          value : zoom,
-                          activeColor: Colors.white,
-                          onChanged:(value) {
-                            print(value);
-                            value = value * 10;
-                            if (value <= 8.0 && value >= 1.0) {
-                      //here we set the zoom level when we move slider pointer
-                              cameraController.setZoomLevel(value);
-                            }
-                            setState(() {
-                              zoom = value / 10;
-                            });
-                          }
-                      ),
-                    )
-
-                  ),
 
 
 
@@ -240,6 +242,7 @@ class CameraPageState extends State<CameraPage1> {
           return Scaffold(
             body : Image.file(File(file.path)),
             appBar: AppBar(
+              backgroundColor: Colors.cyanAccent,
               title: const Text('Here is your image captured, let me know you will save or not save'),
               actions: [
 
@@ -258,13 +261,19 @@ class CameraPageState extends State<CameraPage1> {
                      showDialog(context : context,
                          builder:(context) {
                               return AlertDialog(
-                                 title: Text('Image saved'),
+                                backgroundColor: Colors.white54,
+                                 title: Center(child: Text('Image saved',
+                                 style: TextStyle(
+                                   color: Colors.tealAccent
+                                 ),)),
                                 actions: [
-                                  TextButton(onPressed: () {
-                                    Navigator.pop(context);
-                                    Navigator.pop(context);
-                                  },
-                                  child : Text('OK'))
+                                  Center(
+                                    child: TextButton(onPressed: () {
+                                      Navigator.pop(context);
+                                      Navigator.pop(context);
+                                    },
+                                    child : Text('OK')),
+                                  )
                                 ],
                               );
                          });
