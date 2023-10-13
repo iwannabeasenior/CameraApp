@@ -18,7 +18,7 @@ void main() async{
     debugShowCheckedModeBanner: false,
     home : SafeArea(
       child: Scaffold(
-        body: Home(),
+        body: Login(),
       ),
     )
   ));
