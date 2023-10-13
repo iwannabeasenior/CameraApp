@@ -67,7 +67,7 @@ class CameraPageState extends State<CameraPage1> {
                     child : SizedBox(
                       height: 200,
                       width: 200,
-                      child: CupertinoSlider(
+                      child: Slider(
 
 
                           value : zoom,
