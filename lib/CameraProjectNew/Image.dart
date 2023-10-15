@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:gallery_saver/gallery_saver.dart';
-import 'package:untitled/cameraProject/QRcode.dart';
 import 'package:video_player/video_player.dart';
 import '../font/my_flutter_app_icons.dart';
 import '../font/flash_icon.dart';
@@ -20,7 +19,7 @@ class CameraPage1 extends StatefulWidget {
 class CameraPageState extends State<CameraPage1> {
 
   //zoom
-  double zoom = 0.0;
+  double zoom = 0.1;
   //flash
   late IconData flashIcon;
   FlashMode flashMode = FlashMode.off;
@@ -33,6 +32,8 @@ class CameraPageState extends State<CameraPage1> {
   late List<CameraDescription>cameras;
   bool _isLoading = true;
   bool _isRecording = false;
+
+  double _baseScaleFactor = 1.0;
   @override
   Widget build(BuildContext context) {
 
@@ -48,21 +49,29 @@ class CameraPageState extends State<CameraPage1> {
         fit: StackFit.expand,
             // alignment: Alignment.bottomCenter,
             children : [
-              CameraPreview(cameraController),
+              GestureDetector(
+
+                onScaleStart: (details) {
+                    _baseScaleFactor = zoom;
+                },
+                onScaleUpdate: (details) {
+                  setState(() {
+                    zoom = _baseScaleFactor * details.scale;
+                    if (zoom*10 >= 1 && zoom*10 <= 8) cameraController.setZoomLevel(zoom*10);
+                  });
+                },
+                child : CameraPreview(cameraController)
+              ),
 
               Align(
-
                   alignment: Alignment.bottomCenter,
                   child : SizedBox(
                     height: 200,
                     width: 200,
                     child: Slider(
-
-
                         value : zoom,
                         activeColor: Colors.white,
                         onChanged:(value) {
-                          print(value);
                           value = value * 10;
                           if (value <= 8.0 && value >= 1.0) {
                             //here we set the zoom level when we move slider pointer
@@ -85,68 +94,64 @@ class CameraPageState extends State<CameraPage1> {
                     child : Icon(Icons.circle_outlined),
                     backgroundColor: Colors.white,
                   ),
-
-
                 ],
               ),
 
-
-
                   Align(
-                      alignment: Alignment(0, -0.9),
-                      child : Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          IconButton(
+                      alignment: Alignment(0, -1),
+                      child : Container(
+                        color : Colors.black12,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            IconButton(
+                                color : Colors.white,
+                                onPressed: () {
+                                  setTime();
+                                  if (time == 0) {
+                                    timeIcon = MyFlutterApp.timer_off;
+                                  } else if (time == 3) timeIcon = MyFlutterApp.timer_3;
+                                  else timeIcon = MyFlutterApp.timer_10;
+                                  setState(() {});
+                                },
+                                icon: Icon(timeIcon)),
+                            IconButton(
                               color : Colors.white,
                               onPressed: () {
-                                setTime();
-                                if (time == 0) {
-                                  timeIcon = MyFlutterApp.timer_off;
-                                } else if (time == 3) timeIcon = MyFlutterApp.timer_3;
-                                else timeIcon = MyFlutterApp.timer_10;
+                                setFlashMode();
+                                if (flashMode == FlashMode.off) {
+                                  flashIcon = FlashIcon.flash_off;
+                                } else if (flashMode == FlashMode.always) flashIcon = FlashIcon.flash_on;
+                                else flashIcon = FlashIcon.flash_auto;
                                 setState(() {});
                               },
-                              icon: Icon(timeIcon)),
-                          IconButton(
-                            color : Colors.white,
-                            onPressed: () {
-                              setFlashMode();
-                              if (flashMode == FlashMode.off) {
-                                flashIcon = FlashIcon.flash_off;
-                              } else if (flashMode == FlashMode.always) flashIcon = FlashIcon.flash_on;
-                              else flashIcon = FlashIcon.flash_auto;
-                              setState(() {});
-                            },
-                            icon : Icon(flashIcon),
+                              icon : Icon(flashIcon),
 
-                          ),
-                          IconButton(
-                              alignment: Alignment.bottomCenter,
-                              color: Colors.tealAccent,
-                              onPressed: () async {
-                                final lenDirection = cameraController.description.lensDirection;
-                                CameraDescription cameraDescription;
-                                if (lenDirection == CameraLensDirection.front) {
-                                  cameraDescription  = cameras.firstWhere((element) => element.lensDirection == CameraLensDirection.back);
-                                } else {
-                                  cameraDescription = cameras.firstWhere((element) => element.lensDirection == CameraLensDirection.front);
-                                }
-                                if (cameraDescription != null) {
-                                  cameraController = CameraController(cameraDescription, ResolutionPreset.max);
-                                }
-                                await cameraController.initialize();
-                                setState(() {});
-                              },
-                              icon: Icon(Icons.cameraswitch))
+                            ),
+                            IconButton(
+                                alignment: Alignment.bottomCenter,
+                                color: Colors.tealAccent,
+                                onPressed: () async {
+                                  final lenDirection = cameraController.description.lensDirection;
+                                  CameraDescription cameraDescription;
+                                  if (lenDirection == CameraLensDirection.front) {
+                                    cameraDescription  = cameras.firstWhere((element) => element.lensDirection == CameraLensDirection.back);
+                                  } else {
+                                    cameraDescription = cameras.firstWhere((element) => element.lensDirection == CameraLensDirection.front);
+                                  }
+                                  if (cameraDescription != null) {
+                                    cameraController = CameraController(cameraDescription, ResolutionPreset.max);
+                                  }
+                                  await cameraController.initialize();
+                                  setState(() {});
+                                },
+                                icon: Icon(Icons.cameraswitch))
 
-                        ],
+                          ],
+                        ),
                       )
                   )
-
-
-
             ]
       );
     }
@@ -172,65 +177,6 @@ class CameraPageState extends State<CameraPage1> {
     });
   }
 
-  _recordVideo() async{
-    if (_isRecording) {
-      final file = await cameraController.stopVideoRecording();
-      setState(() {
-        _isRecording = false;
-      });
-      videoPlayerController = VideoPlayerController.file(File(file.path));
-      await videoPlayerController.initialize();
-      await videoPlayerController.setLooping(true);
-      await videoPlayerController.play();
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return Scaffold(
-            body : VideoPlayer(videoPlayerController),
-            appBar: AppBar(
-              title: Text('Your record video here, do you want to save it ?'),
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    GallerySaver.saveVideo(file.path);
-                    showDialog(context: context,
-                        builder: (context) {
-                            return AlertDialog(
-                              actions: [
-                                IconButton(
-                                  onPressed: () async{
-                                    try {
-                                      Share.shareXFiles([file], text :'hello' );
-                                    } catch(Exception) {};
-
-                                  },
-                                  icon: Icon(Icons.share),
-                                ),
-                                TextButton(
-                                  onPressed : () {
-                                    Navigator.pop(context);
-                                    Navigator.pop(context);
-                                    videoPlayerController.pause();
-                                  },
-                                  child: Text('OK'),
-                                )
-                              ],
-                              title: Text('Video saved'),
-                            );
-                        });
-                  },
-                  icon : Icon(Icons.check)
-                )
-              ],
-            ),
-          );
-      }));
-    } else {
-        await cameraController.prepareForVideoRecording();
-        await cameraController.startVideoRecording();
-      setState(() {
-        _isRecording = true;
-      });
-    }
-  }
 
 
   _capturePicture() async {
@@ -245,7 +191,6 @@ class CameraPageState extends State<CameraPage1> {
               backgroundColor: Colors.cyanAccent,
               title: const Text('Here is your image captured, let me know you will save or not save'),
               actions: [
-
                 IconButton(
                   onPressed: () async{
                     try {
@@ -279,7 +224,7 @@ class CameraPageState extends State<CameraPage1> {
                          });
                      // Navigator.pop(context);
                    },
-                    icon : Icon(Icons.check),
+                    icon : Icon(Icons.download),
                 )
               ],
 

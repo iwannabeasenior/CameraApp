@@ -49,37 +49,43 @@ class QRcodeState extends State<QRcode> {
                   key : qrKey,
                   onQRViewCreated: _onQRViewCreated ,
                 )),
+            Container(
+              color : Colors.amber,
+              child: Expanded(
+                  flex : 1,
+                  child: Center(
+                    child: Text('Scan Result : $result',
+                                      style: const TextStyle(
+                                        fontSize: 18
+                                      ),),
+                  )),
+            ),
             Expanded(
-                flex : 1,
-                child: Center(
-                  child: Text('Scan Result : $result',
-                                    style: const TextStyle(
-                                      fontSize: 18
-                                    ),),
-                )),
-            Expanded(
-                  child: Row(
-                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      ElevatedButton(onPressed: () {
-                          if (result.isNotEmpty) {
-                            Clipboard.setData(ClipboardData(text: result));
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Copied to Clipboard'))
-                            );
-                          }
-                        }, child: const Icon(Icons.copy)
-                      ),
-                      ElevatedButton(
-                          onPressed: () async {
-
+                  child: Container(
+                    color: Colors.amber,
+                    child: Row(
+                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        ElevatedButton(onPressed: () {
                             if (result.isNotEmpty) {
-                              final Uri _url = Uri.parse(result);
-                              await launchUrl(_url);
+                              Clipboard.setData(ClipboardData(text: result));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Copied to Clipboard'))
+                              );
                             }
-                          }, child: const Icon(Icons.open_in_new)),
-                    ],
+                          }, child: const Icon(Icons.copy)
+                        ),
+                        ElevatedButton(
+                            onPressed: () async {
+
+                              if (result.isNotEmpty) {
+                                final Uri _url = Uri.parse(result);
+                                await launchUrl(_url);
+                              }
+                            }, child: const Icon(Icons.open_in_new)),
+                      ],
+                    ),
                   ),
                 )
           ],

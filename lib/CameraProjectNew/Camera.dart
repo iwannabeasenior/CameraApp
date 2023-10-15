@@ -1,26 +1,23 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled/CameraProjectNew/Login.dart';
-import 'package:settings_ui/settings_ui.dart';
 import 'package:untitled/CameraProjectNew/Settings.dart';
 import '../firebase/repos/userRepos/firebase_options.dart';
 import 'QRcode.dart';
 import 'package:untitled/CameraProjectNew/Image.dart';
 import 'package:untitled/CameraProjectNew/Video.dart';
-// import 'Image.dart';
-// import 'Mylogin.dart';
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home : SafeArea(
-      child: Scaffold(
-        body: Home(),
-      ),
-    )
+      debugShowCheckedModeBanner: false,
+      home : SafeArea(
+        child: Scaffold(
+          body: Login(),
+        ),
+      )
   ));
 }
 
@@ -34,28 +31,29 @@ class Home extends StatefulWidget {
 class HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-      return DefaultTabController(
-          length: 4 ,
-          child: Scaffold(
-            extendBody: false,
-            extendBodyBehindAppBar: true,
-            // appBar: AppBar(
-            //   backgroundColor: Colors.black12.withOpacity(0.05),
-            // ),
-            drawer: const Drawer(
-              child : Icon(Icons.add_alert),
-            ) ,
-            bottomNavigationBar: menu(),
-            body : const TabBarView(
-              children: [
-                  CameraPage1(),//image
-                  CameraPage2(),//video
-                  QRcode(),
-                  Setting(),
-              ],
+      return SafeArea(
+          child: DefaultTabController(
+            length: 4 ,
+            child: Scaffold(
+                extendBody: false,
+                extendBodyBehindAppBar: true,
+                // appBar: AppBar(
+                //   backgroundColor: Colors.black12.withOpacity(0.05),
+                // ),
+                drawer: const Drawer(
+                  child : Icon(Icons.add_alert),
+                ) ,
+                bottomNavigationBar: menu(),
+                body : const TabBarView(
+                  children: [
+                    CameraPage1(),//image
+                    CameraPage2(),//video
+                    QRcode(),
+                    Setting(),
+                  ],
+                )
             )
-          )
-      );
+      ));
   }
 
 }
