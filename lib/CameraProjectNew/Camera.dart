@@ -15,7 +15,7 @@ void main() async{
       debugShowCheckedModeBanner: false,
       home : SafeArea(
         child: Scaffold(
-          body: Login(),
+          body: Home(),
         ),
       )
   ));
@@ -40,9 +40,9 @@ class HomeState extends State<Home> {
                 // appBar: AppBar(
                 //   backgroundColor: Colors.black12.withOpacity(0.05),
                 // ),
-                drawer: const Drawer(
-                  child : Icon(Icons.add_alert),
-                ) ,
+                // drawer: const Drawer(
+                //   child : Icon(Icons.add_alert),
+                // ) ,
                 bottomNavigationBar: menu(),
                 body : const TabBarView(
                   children: [
@@ -73,7 +73,7 @@ Widget menu() {
         ),
         Tab(
           text: "Video",
-          icon: Icon(Icons.circle), // add stop
+          icon: Icon(Icons.emergency_recording), // add stop
         ),
         Tab(
           text: "QR Code",

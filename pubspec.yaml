@@ -54,6 +54,8 @@ dependencies:
   url_launcher: ^6.1.14
   flutter_launcher_icons: ^0.13.1
   smooth_video_progress: ^0.0.4
+  android_intent_plus: ^4.0.3
+  photo_view: ^0.14.0
 
 
 dev_dependencies:
@@ -119,6 +121,11 @@ flutter:
     - family: FlashIcon
       fonts:
         - asset: assets/font/FlashIcon.ttf
+    - family: Eye
+      fonts:
+        - asset: assets/font/Eye.ttf
+
+
   assets:
     - assets/image/welcome.jpg
     - assets/image/login.png

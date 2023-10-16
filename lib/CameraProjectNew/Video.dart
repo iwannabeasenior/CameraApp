@@ -5,6 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:gallery_saver/gallery_saver.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:smooth_video_progress/smooth_video_progress.dart';
 import 'package:video_player/video_player.dart';
 import '../font/my_flutter_app_icons.dart';
@@ -14,10 +16,12 @@ import 'package:share_plus/share_plus.dart';
 enum MenuItemButton {
   button1, button2, button3;
 }
+// final uri = Uri.parse('https://www.youtube.com/watch?v=tWHzycT3yZ8&list=RDtWHzycT3yZ8&start_radio=1');
+// late VideoPlayerController videoPlayerController = VideoPlayerController.networkUrl(uri);
 late VideoPlayerController videoPlayerController;
 late XFile fileVideo;
 String speed = '1.0';
-double _baseScaleFactor = 1.0;
+
 bool volumn = true;
 
 class CameraPage2 extends StatefulWidget {
@@ -36,13 +40,13 @@ class CameraPageState extends State<CameraPage2> {
   // time
   late IconData timeIcon;
   int time = 0;
-
+  double _baseScaleFactor = 1.0;
 
   late CameraController cameraController;
   late List<CameraDescription>cameras;
   bool _isLoading = true;
   bool _isRecording = false;
-
+  final ImagePicker picker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
@@ -100,9 +104,38 @@ class CameraPageState extends State<CameraPage2> {
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
+                IconButton(onPressed: () async  {
+                  try {
+                    final XFile? video = await picker.pickVideo(source: ImageSource.gallery, maxDuration: Duration(hours: 1));
+                    if (video != Null)
+                      Navigator.push(context, MaterialPageRoute(
+                          builder: (context)   {
+                            return Scaffold(
+                                appBar: AppBar(
+                                  backgroundColor: Colors.lightGreenAccent,
+                                  title: Center(child: Text('Photo view')),
+                                ),
+                                body : PhotoView(
+                                  enableRotation: true,
+                                  enablePanAlways: true,
+                                  backgroundDecoration: BoxDecoration(
+                                      color: Colors.black
+                                  ),
+                                  imageProvider: AssetImage(video!.path),
+                                )
+                            );
+                          }
+                      )
+                      );
+                  } catch (e) {
+                    // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${e}')));
+                  }
+                }, icon: Icon(Icons.photo_camera_back)),
+
                 FloatingActionButton(onPressed: _recordVideo,
                     child : Icon(_isRecording ? Icons.stop : Icons.circle),
                     backgroundColor: Colors.white54),
+                IconButton(onPressed: () {}, icon: Icon(Icons.add))
               ],
             ),
             Align(

@@ -29,19 +29,24 @@ class ForgetPasswordState extends State<ForgetPassword> {
               print(e);
             }
           },
-          child: Text('Reset Password'));
+          child: Text('Reset Password',
+          style: TextStyle(
+            color: Colors.black
+          )),);
       return Scaffold(
+        backgroundColor: Colors.greenAccent,
         appBar: AppBar(
           title: const Text('Reset Password'),
         ),
         body : Container(
-
           child: ListView(
+            padding: EdgeInsets.all(30),
             shrinkWrap: true,
             children: [
                 SizedBox(height: 150,),
                 const Center(child: Text('Receive an email to reset password',
-                style: TextStyle(fontSize: 32),)),
+                style: TextStyle(fontSize: 32, color: Colors.pink),
+                textAlign: TextAlign.center,)),
                 SizedBox(height: 30,),
                 sendToEmail,
                 SizedBox(height: 10,),

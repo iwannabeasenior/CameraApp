@@ -50,7 +50,7 @@ class QRcodeState extends State<QRcode> {
                   onQRViewCreated: _onQRViewCreated ,
                 )),
             Container(
-              color : Colors.amber,
+              color : Colors.amberAccent,
               child: Expanded(
                   flex : 1,
                   child: Center(
@@ -62,7 +62,7 @@ class QRcodeState extends State<QRcode> {
             ),
             Expanded(
                   child: Container(
-                    color: Colors.amber,
+                    color: Colors.amberAccent,
                     child: Row(
                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -78,7 +78,6 @@ class QRcodeState extends State<QRcode> {
                         ),
                         ElevatedButton(
                             onPressed: () async {
-
                               if (result.isNotEmpty) {
                                 final Uri _url = Uri.parse(result);
                                 await launchUrl(_url);

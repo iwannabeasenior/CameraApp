@@ -5,6 +5,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:gallery_saver/gallery_saver.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 import 'package:video_player/video_player.dart';
 import '../font/my_flutter_app_icons.dart';
 import '../font/flash_icon.dart';
@@ -32,7 +35,7 @@ class CameraPageState extends State<CameraPage1> {
   late List<CameraDescription>cameras;
   bool _isLoading = true;
   bool _isRecording = false;
-
+  final ImagePicker picker = ImagePicker();
   double _baseScaleFactor = 1.0;
   @override
   Widget build(BuildContext context) {
@@ -56,6 +59,7 @@ class CameraPageState extends State<CameraPage1> {
                 },
                 onScaleUpdate: (details) {
                   setState(() {
+                    print(details.scale);
                     zoom = _baseScaleFactor * details.scale;
                     if (zoom*10 >= 1 && zoom*10 <= 8) cameraController.setZoomLevel(zoom*10);
                   });
@@ -88,12 +92,46 @@ class CameraPageState extends State<CameraPage1> {
 
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment : MainAxisAlignment.spaceEvenly,
                 children: [
+                  IconButton(onPressed: () async  {
+                    try {
+                      final XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 100);
+                      if (image != Null)
+                      Navigator.push(context, MaterialPageRoute(
+                          builder: (context)   {
+                              return Scaffold(
+                                  appBar: AppBar(
+                                    backgroundColor: Colors.lightGreenAccent,
+                                    title: Center(child: Text('Photo view')),
+                                  ),
+                                  body : PhotoView(
+                                    enableRotation: true,
+                                    enablePanAlways: true,
+                                    backgroundDecoration: BoxDecoration(
+                                        color: Colors.black
+                                    ),
+                                    imageProvider: AssetImage(image!.path),
+                                  )
+                              );
+                          }
+                          )
+                      );
+                    } catch (e) {
+                        // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${e}')));
+                    }
+                  }, icon: Icon(Icons.photo_camera_back)),
+
                   FloatingActionButton(onPressed: _capturePicture,
                     child : Icon(Icons.circle_outlined),
                     backgroundColor: Colors.white,
                   ),
+                  IconButton(
+                    onPressed: () {
+
+                    },
+                    icon : Icon(Icons.add),
+                  )
                 ],
               ),
 

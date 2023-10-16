@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled/CameraProjectNew/Camera.dart';
 import 'package:untitled/CameraProjectNew/ForgetPassword.dart';
+import 'package:untitled/font/eye_icon.dart';
 import 'SignUp.dart';
 class Login extends StatefulWidget {
   @override
@@ -13,6 +14,7 @@ class Login extends StatefulWidget {
 class LoginState extends State<Login> {
   final controllerEmail = TextEditingController();
   final controllerPassword = TextEditingController();
+  late bool obscure = true;
   @override
   Widget build(BuildContext context) {
     final logo = CircleAvatar(
@@ -25,16 +27,35 @@ class LoginState extends State<Login> {
       autofocus: true,
       keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
+          suffixIcon: IconButton(
+            onPressed: () {
+              controllerEmail.clear();
+            },
+            icon : Icon(Icons.clear)
+          ),
           hintText: 'Enter your email',
           contentPadding: EdgeInsets.all(20),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(32))
       ),
     );
     final password = TextFormField(
+
       controller: controllerPassword,
       autofocus: false,
-      obscureText: true,
+      obscureText: obscure,
       decoration: InputDecoration(
+        suffixIcon: IconButton(
+          onPressed: () {
+            setState(() {
+              if (obscure) {
+                obscure = false;
+              } else {
+                obscure = true;
+              }
+            });
+          },
+          icon : Icon(obscure ? Eye.eye : Eye.eye_slash)
+        ),
         hintText: 'Enter your password',
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(32)),
         contentPadding: EdgeInsets.all(20),
