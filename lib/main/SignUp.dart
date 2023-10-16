@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import '../firebase/repos/userRepos/firebase_options.dart';
 import 'Login.dart';
 class SignUp extends StatefulWidget {
   const SignUp({super.key});

@@ -1,8 +1,8 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:untitled/CameraProjectNew/Camera.dart';
-import 'package:untitled/CameraProjectNew/ForgetPassword.dart';
+import 'package:untitled/main/Camera.dart';
+import 'package:untitled/main/ForgetPassword.dart';
 import 'package:untitled/font/eye_icon.dart';
 import 'SignUp.dart';
 class Login extends StatefulWidget {
