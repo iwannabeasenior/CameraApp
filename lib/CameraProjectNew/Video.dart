@@ -279,14 +279,12 @@ class RecordVideoState extends State<RecordVideo> {
                   controller: videoPlayerController,
                   builder: (context, position, duration, child) {
                     return Slider(
-                      onChangeEnd: (_) {
-                        videoPlayerController.play();
+                      onChangeEnd: (_)  {
                       },
-                      onChangeStart: (_) {
-                        videoPlayerController.pause();
+                      onChangeStart: (_)  {
                       },
                       onChanged: (value) {
-                        videoPlayerController.seekTo(Duration(milliseconds: value.toInt()));
+                        // videoPlayerController.seekTo(Duration(milliseconds: value.toInt()));
                       },
                       value: position.inMilliseconds.toDouble(),
                       min : 0,
@@ -303,7 +301,7 @@ class RecordVideoState extends State<RecordVideo> {
                       // // videoPlayerController.setVolume(10000)
                       // int minute = await videoPlayerController.position.then((value) => value!.inMinutes);
                       // int hour = await videoPlayerController.position.then((value) => value!.inHours);
-                      int second = await videoPlayerController.position.then((value) => value!.inSeconds - 5);
+                      int second = await videoPlayerController.position.then((value) => value!.inSeconds - 3);
                       // videoPlayerController.seekTo(Duration(hours: hour, minutes : minute, seconds: second));
                       videoPlayerController.seekTo(Duration(seconds : second));
                     },
@@ -325,7 +323,7 @@ class RecordVideoState extends State<RecordVideo> {
                         // // videoPlayerController.setVolume(10000)
                         // int minute = await videoPlayerController.position.then((value) => value!.inMinutes);
                         // int hour = await videoPlayerController.position.then((value) => value!.inHours);
-                        int second = await videoPlayerController.position.then((value) => value!.inSeconds - 5);
+                        int second = await videoPlayerController.position.then((value) => value!.inSeconds + 3);
                         // videoPlayerController.seekTo(Duration(hours: hour, minutes : minute, seconds: second));
                         videoPlayerController.seekTo(Duration(seconds : second));
                       },
@@ -360,8 +358,10 @@ class RecordVideoState extends State<RecordVideo> {
                   IconButton(
                     onPressed: () {
                       if (volumn) {
+                        volumn = false;
                         videoPlayerController.setVolume(0.0);
                       } else {
+                        volumn = true;
                         videoPlayerController.setVolume(1.0);
                       }
                       setState(() {});

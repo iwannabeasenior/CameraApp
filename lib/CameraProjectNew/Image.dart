@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:gallery_saver/gallery_saver.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -263,7 +264,7 @@ class CameraPageState extends State<CameraPage1> {
                      // Navigator.pop(context);
                    },
                     icon : Icon(Icons.download),
-                )
+                ),
               ],
 
             ),
@@ -271,6 +272,8 @@ class CameraPageState extends State<CameraPage1> {
           );
         }));
   }
+
+
   void setTime() {
     if (time == 0) {
       time = 3;
