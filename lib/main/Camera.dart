@@ -2,14 +2,14 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled/main/Login.dart';
 import 'package:untitled/main/Settings.dart';
-// import '../firebase/repos/userRepos/firebase_options.dart';
+import '../firebase_options.dart';
 import 'QRcode.dart';
 import 'package:untitled/main/Image.dart';
 import 'package:untitled/main/Video.dart';
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    // options: DefaultFirebaseOptions.currentPlatform,
+    options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(MaterialApp(
       debugShowCheckedModeBanner: false,
